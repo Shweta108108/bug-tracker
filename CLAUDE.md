@@ -37,7 +37,7 @@ Databases `issuehub` and `issuehub_test` must be created manually
 npm install
 npm run dev        # dev server, http://localhost:5173
 npm run build       # tsc -b && vite build
-npm run lint         # eslint
+npm run lint         # oxlint
 ```
 
 ## Architecture
@@ -49,7 +49,7 @@ Strict layering to keep permission logic from being duplicated per route:
 - `routers/` — thin HTTP adapters only (parse request, call a service, return response). No business logic or DB queries here.
 - `services/` — business logic and authorization decisions live here (e.g. `issue_service.update_issue` decides field-level permission based on reporter vs maintainer).
 - `dao/` — SQLAlchemy query builders (e.g. `issue_dao` builds the combined filter/search/sort/pagination query for issue listing).
-- `core/deps.py` — shared FastAPI dependencies: `get_current_user` (JWT decode), `get_current_project_membership` and `get_issue_membership` (both call the same `services/authz.get_membership_or_403` helper — one place that enforces "is this user a member of this project").
+- `core/deps.py` — `get_current_user` FastAPI dependency (JWT decode + user load). Project/issue membership checks are **not** separate FastAPI dependencies — `services/authz.get_membership_or_403(db, project_id, user_id)` is called directly from route handlers/services wherever a project- or issue-scoped action happens (e.g. `routers/projects.get_project`, `services/project_service.add_member`/`list_members`). This is the one place that enforces "is this user a member of this project"; `authz.assert_maintainer(membership)` is the one place that enforces maintainer-only actions.
 - `core/security.py` — password hashing (passlib/bcrypt) and JWT create/decode (python-jose, HS256).
 - `core/exceptions.py` — `AppError` + subclasses, mapped to the structured `{"error": {"code", "message", "details"}}` response shape via exception handlers registered in `main.py`.
 

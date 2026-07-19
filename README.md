@@ -93,7 +93,7 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - [x] Repo scaffold: backend `/health` endpoint, frontend Tailwind-styled placeholder page
 - [x] Database schema + migrations
 - [x] Auth endpoints (signup/login/me)
-- [ ] Projects + membership endpoints
+- [x] Projects + membership endpoints
 - [ ] Issue CRUD + filter/search/sort
 - [ ] Comments
 - [ ] Frontend auth pages
@@ -103,4 +103,8 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 
 ## Deviations from the example API contract
 
-Documented here as they're introduced; see `CLAUDE.md` for the full running list.
+- **`GET /api/projects/{id}`** and **`GET /api/projects/{id}/members`** added — not in the original contract, but needed by the frontend to show the caller's role in a project and to populate assignee/member-management UI.
+- **Structured error codes are specific**, not just the generic `NOT_FOUND`/`CONFLICT`: adding a member with an unregistered email returns `USER_NOT_FOUND` (404), adding an existing member returns `ALREADY_MEMBER` (409).
+- **Invite-by-email requires an existing account** — returns `USER_NOT_FOUND` rather than creating a pending invite (see Tech choices above).
+
+More deviations will be added here as later milestones (issues, comments) introduce them; see `CLAUDE.md` for implementation-level detail.
