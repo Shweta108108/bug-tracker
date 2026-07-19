@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.core.exceptions import AppError
-from app.routers import auth, issues, projects, users
+from app.routers import auth, comments, issues, projects, users
 
 settings = get_settings()
 
@@ -24,6 +24,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(projects.router)
 app.include_router(issues.router)
+app.include_router(comments.router)
 
 
 @app.exception_handler(AppError)

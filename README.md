@@ -95,7 +95,7 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - [x] Auth endpoints (signup/login/me)
 - [x] Projects + membership endpoints
 - [x] Issue CRUD + filter/search/sort
-- [ ] Comments
+- [x] Comments
 - [ ] Frontend auth pages
 - [ ] Frontend projects/issues/issue-detail pages
 - [ ] Seed script + demo credentials
