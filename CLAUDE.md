@@ -123,6 +123,6 @@ that navigation succeeded.
 
 ## Workflow conventions for this repo
 
-- Commit and push after each meaningful milestone (a working feature/endpoint/component), not every small edit — this project pushes progress continuously to `git@github.com:Shweta108108/bug-tracker.git`.
-- Update this file and `README.md` incrementally as milestones land (e.g. add env vars when they're introduced, update the progress checklist), not only in one final pass.
+- Commit and push after each meaningful milestone (a working feature/endpoint/component), not every small edit — this project pushes progress continuously to `https://github.com/Shweta108108/bug-tracker.git` (HTTPS remote; SSH wasn't set up on this machine).
+- Update this file and `README.md` incrementally as milestones land (e.g. add env vars when they're introduced, add newly-discovered deviations/limitations), not only in one final pass.
 - Git identity for this repo is configured globally as `Shwet108108 <shwetaspatil1777@gmail.com>`.
