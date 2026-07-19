@@ -92,9 +92,19 @@ two unmaintained-ish `passlib` releases and modern `bcrypt`.
 
 - `api/client.ts` — the only place that attaches the `Authorization: Bearer <token>` header and parses the backend's structured error envelope; other `api/*.ts` files call it.
 - `api/authToken.ts` — plain (non-React) localStorage wrapper, so `client.ts` can read the token outside the React tree.
-- `auth/AuthContext.tsx` — mirrors token state into React, rehydrates via `GET /api/me` on load, listens for a custom `"issuehub:unauthorized"` event (dispatched by `client.ts` on a 401) to redirect to `/login`.
+- `auth/AuthContext.tsx` — mirrors token state into React, rehydrates via `GET /api/me` on load, listens for a custom `"issuehub:unauthorized"` event (dispatched by `client.ts` on a 401) and clears `user`; `ProtectedRoute` then redirects to `/login` on the next render since it reacts to `user` being `null`.
 - Filter/search/sort/pagination state for issue lists is kept in the URL (`useSearchParams`), not component state, so it's bookmarkable and survives refresh.
 - No axios, no react-query/SWR, no UI kit — hand-written fetch wrapper and a small custom `ToastProvider`. This is intentional (documented in README as a "would add with more time" trade-off), not an oversight.
+
+### Verifying frontend changes
+
+No project-specific run skill exists yet. To smoke-test in a real browser:
+start the backend (`uvicorn app.main:app --port 8000`) and frontend
+(`npm run dev`, port 5173), then drive headless Chromium via Playwright
+(`npx playwright install chromium` once, then a small script using
+`import { chromium } from "playwright"`) — `chromium-cli` isn't available on
+this Windows machine. Check `console`/`response` events for errors, not just
+that navigation succeeded.
 
 ## Key decisions (won't need re-litigating)
 
