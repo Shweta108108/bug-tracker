@@ -77,18 +77,22 @@ Runs at `http://localhost:5173` by default.
 
 ## Running tests
 
+Backend tests run against the real `issuehub_test` Postgres database (not
+SQLite), so create it first (see Setup above) — the test suite applies
+migrations to it automatically on each run.
+
 ```bash
 cd backend
-pytest
+pytest                                    # run all tests
+pytest tests/test_auth.py -v              # run one file
+pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a single test
 ```
-
-(Backend tests land in milestone 3+; none exist yet.)
 
 ## Progress checklist
 
 - [x] Repo scaffold: backend `/health` endpoint, frontend Tailwind-styled placeholder page
 - [x] Database schema + migrations
-- [ ] Auth endpoints (signup/login/me)
+- [x] Auth endpoints (signup/login/me)
 - [ ] Projects + membership endpoints
 - [ ] Issue CRUD + filter/search/sort
 - [ ] Comments

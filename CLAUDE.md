@@ -67,6 +67,27 @@ choices (see README's deviations list for the "why"):
 - `users.email` has a functional unique index on `lower(email)` for case-insensitive lookup.
 - `issues.title` has a `pg_trgm` GIN index to accelerate `ILIKE` search (requires `CREATE EXTENSION pg_trgm`, done in the migration).
 
+### Testing infrastructure
+
+Backend tests hit a real local Postgres test database (`issuehub_test`), not
+SQLite — `tests/conftest.py`'s session-scoped `db_engine` fixture points
+Alembic at it via the `ALEMBIC_DATABASE_URL` env var (see `alembic/env.py`)
+and runs `downgrade base` + `upgrade head` once per test session. Each test
+gets an isolated `db_session` via an outer transaction + SAVEPOINT that's
+rolled back on teardown, so tests can freely call `.commit()` without leaking
+data between tests. `tests/factories.py` has `create_user`/`create_project`
+(auto-adds the owner as maintainer)/`create_issue`/`create_comment`, plus
+`auth_headers(user)` which mints a JWT directly (skips an HTTP round trip).
+
+### Known gotcha: passlib + bcrypt version pin
+
+`bcrypt` is pinned to `==4.0.1` in `requirements.txt`. Newer `bcrypt` (4.1+)
+raises `ValueError` on passlib's internal >72-byte self-test string instead
+of truncating, which breaks every `passlib.hash` call at import time. Don't
+upgrade `bcrypt` without also addressing this (e.g. switching off `passlib`
+entirely) — it's a known, currently-unresolved incompatibility between the
+two unmaintained-ish `passlib` releases and modern `bcrypt`.
+
 ### Frontend structure (`frontend/src/`)
 
 - `api/client.ts` — the only place that attaches the `Authorization: Bearer <token>` header and parses the backend's structured error envelope; other `api/*.ts` files call it.
