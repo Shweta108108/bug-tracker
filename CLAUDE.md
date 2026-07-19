@@ -23,6 +23,7 @@ pytest tests/test_issues.py::test_name -v         # run a single test
 alembic upgrade head                              # apply migrations
 alembic downgrade base                            # roll back all migrations
 alembic revision --autogenerate -m "message"       # new migration (review output — see Schema notes below)
+python -m app.scripts.seed                        # populate demo data (idempotent, see README)
 ```
 
 PostgreSQL is a local install (Postgres 17, service `postgresql-x64-17`), not

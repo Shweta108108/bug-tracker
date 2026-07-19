@@ -64,6 +64,24 @@ uvicorn app.main:app --reload --port 8000
 
 Health check: `GET http://localhost:8000/health` → `{"status": "ok"}`
 
+### Seed data (optional)
+
+Populates 2 demo projects, 4 users, ~16 issues with varied status/priority/
+assignee, and a few comments. Safe to re-run — skips if already seeded.
+
+```bash
+python -m app.scripts.seed
+```
+
+Demo accounts (all use password `password123`):
+
+| Email | Role |
+|---|---|
+| alice@example.com | Maintainer of both "Website Revamp" (WEB) and "Mobile App" (MOB) |
+| bob@example.com | Member of WEB |
+| carol@example.com | Member of WEB, maintainer of MOB |
+| dave@example.com | Member of MOB |
+
 ### Frontend
 
 ```bash
@@ -98,7 +116,7 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - [x] Comments
 - [x] Frontend auth pages
 - [x] Frontend projects/issues/issue-detail pages
-- [ ] Seed script + demo credentials
+- [x] Seed script + demo credentials
 - [ ] Final docs polish (architecture notes, trade-offs, known limitations)
 
 ## Deviations from the example API contract
