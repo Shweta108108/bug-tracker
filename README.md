@@ -50,6 +50,12 @@ createdb issuehub
 createdb issuehub_test
 ```
 
+Apply migrations:
+
+```bash
+alembic upgrade head
+```
+
 Run the API:
 
 ```bash
@@ -81,7 +87,7 @@ pytest
 ## Progress checklist
 
 - [x] Repo scaffold: backend `/health` endpoint, frontend Tailwind-styled placeholder page
-- [ ] Database schema + migrations
+- [x] Database schema + migrations
 - [ ] Auth endpoints (signup/login/me)
 - [ ] Projects + membership endpoints
 - [ ] Issue CRUD + filter/search/sort
