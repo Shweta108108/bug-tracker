@@ -1,0 +1,100 @@
+Assignment: IssueHub — a Lightweight Bug Tracker
+Goal
+Build a minimal bug tracker where teams can create projects, file issues, comment on them, and track status. Include authentication, a clean UI, and a well-structured Python backend.
+
+Core Requirements (MVP)
+Tech (required)
+Backend: Python (FastAPI preferred; Flask or Django OK)
+
+DB: PostgreSQL with migrations
+Frontend: React (Vite or Next.js)
+Auth: Email/password (JWT or session); signup + login + logout
+Testing: At least a few meaningful unit/integration tests (backend)
+Docs: Clear README with setup, run, test, and architectural notes
+API Style: REST (JSON). CORS handled.
+User Roles
+User: Can create/read/update issues they reported, comment, and view all issues in projects they belong to
+Project Maintainer: Can update/assign/close any issue in their project, manage project membership
+
+Entities & Schema (suggested)
+users (id, name, email, password_hash, created_at)
+
+projects (id, name, key, description, created_at)
+
+project_members (project_id, user_id, role) // member or maintainer
+
+issues (id, project_id, title, description, status, priority, reporter_id, assignee_id, created_at, updated_at)
+
+status: open | in_progress | resolved | closed
+
+priority: low | medium | high | critical
+
+comments (id, issue_id, author_id, body, created_at)
+
+Required Features
+Auth & Projects
+Sign up, log in/out
+Create a project (maintainer by default)
+Invite/add members by email (no email send required—just a form)
+
+Issues
+CRUD issues within a project
+Filter & search (by status, priority, assignee, text search in title)
+Sort by created_at / priority / status
+
+Issue Details
+View thread with comments
+Add comment
+Change status & assignee (maintainers only)
+UX
+Responsive, tidy UI; simple navigation: Projects → Issues → Issue Detail
+Basic form validation and user feedback (spinners/toasts)
+
+API Contract (example)
+You can adapt, but document deviations.
+POST   /api/auth/signup                 {name,email,password}
+POST   /api/auth/login                  {email,password} -> {access_token}
+GET    /api/me                          -> user profile
+
+POST   /api/projects                    {name,key,description}
+GET    /api/projects                    -> list projects current user belongs to
+POST   /api/projects/{id}/members       {email, role}
+
+GET    /api/projects/{id}/issues        ?q=&status=&priority=&assignee=&sort=
+POST   /api/projects/{id}/issues        {title,description,priority,assignee_id}
+GET    /api/issues/{issue_id}
+PATCH  /api/issues/{issue_id}           {title?,description?,status?,priority?,assignee_id?}
+DELETE /api/issues/{issue_id}
+
+GET    /api/issues/{issue_id}/comments
+POST   /api/issues/{issue_id}/comments  {body}
+
+Auth: Bearer JWT in Authorization header or secure cookie.
+Errors: Return structured errors {error: {code, message, details?}}.
+
+Frontend Pages (minimum)
+Login / Signup
+Projects List (create project)
+Project Detail → Issues List
+Filters (status/priority/assignee), search box, sorting dropdown, pagination
+“New Issue” modal/page
+Issue Detail
+Metadata (status, priority, assignee, reporter, timestamps)
+Comment thread and composer
+Status/assignee controls (visible only to maintainers)
+
+Non-Functional Requirements
+Security basics: hashed passwords (e.g., bcrypt/argon2), input validation (pydantic/WTForms), protected routes
+Structure: clean modules, clear separation (routes/services/dao/models)
+Migrations: Alembic/Django migrations
+Seed script: optional script to create demo data (1–2 projects, 10–20 issues)
+
+What to Submit
+GitHub repo link (public or invite us)
+
+README with:
+Tech choices & trade-offs
+Setup instructions (env vars, DB, migrations)
+How to run: backend, frontend, tests
+Known limitations & what you’d do with more time
+(Optional) Live URL + demo user credentials
