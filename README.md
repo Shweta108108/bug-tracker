@@ -97,7 +97,7 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - [x] Issue CRUD + filter/search/sort
 - [x] Comments
 - [x] Frontend auth pages
-- [ ] Frontend projects/issues/issue-detail pages
+- [x] Frontend projects/issues/issue-detail pages
 - [ ] Seed script + demo credentials
 - [ ] Final docs polish (architecture notes, trade-offs, known limitations)
 
@@ -111,5 +111,12 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - **Assignee must already be a project member** — assigning an issue to a non-member returns 400 `ASSIGNEE_NOT_MEMBER`.
 - **Priority sort uses an explicit severity ranking** (`critical > high > medium > low`), not alphabetical string order.
 - **Title search is `ILIKE`-based** (substring, case-insensitive), accelerated by a `pg_trgm` GIN index — not full-text (`tsvector`) search.
+
+## Known limitations
+
+- Toasts cap at 3 visible at once and auto-dismiss after 4s; several rapid actions in a row can still visually overlap page controls briefly.
+- No pending-invite flow — adding a member requires them to already have an account.
+- No refresh tokens; the JWT access token has a fixed expiry and there's no server-side logout/invalidation.
+- Frontend has no automated test suite (backend does); frontend correctness was verified manually via a Playwright-driven browser flow covering the full multi-role journey (signup, project creation, membership, issue filter/search/sort, status/assignee changes, comments) with console/network error checks.
 
 More deviations will be added here as later milestones (comments, frontend) introduce them; see `CLAUDE.md` for implementation-level detail.

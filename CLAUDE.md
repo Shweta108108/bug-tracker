@@ -95,6 +95,9 @@ two unmaintained-ish `passlib` releases and modern `bcrypt`.
 - `auth/AuthContext.tsx` — mirrors token state into React, rehydrates via `GET /api/me` on load, listens for a custom `"issuehub:unauthorized"` event (dispatched by `client.ts` on a 401) and clears `user`; `ProtectedRoute` then redirects to `/login` on the next render since it reacts to `user` being `null`.
 - Filter/search/sort/pagination state for issue lists is kept in the URL (`useSearchParams`), not component state, so it's bookmarkable and survives refresh.
 - No axios, no react-query/SWR, no UI kit — hand-written fetch wrapper and a small custom `ToastProvider`. This is intentional (documented in README as a "would add with more time" trade-off), not an oversight.
+- `ToastProvider` caps at `MAX_VISIBLE_TOASTS = 3` visible toasts — several rapid mutations in a row (e.g. an automated test firing 4+ actions in a couple seconds) can still momentarily stack toasts over bottom-right page controls (Edit/Delete, Comment). Known limitation, not a bug to "fix" by chasing further — see README.
+- Maintainer-only controls (status/assignee selects in `IssueMeta`, the member-management panel in `ProjectIssuesPage`) render conditionally off `project.role === "maintainer"` from `GET /api/projects/{id}`, not off a separate permissions call.
+- `IssueDetailPage` treats "can edit title/description/priority" as `isMaintainer || issue.reporter.id === user.id` — mirrors the backend's `issue_service.update_issue` rule exactly (status/assignee stay maintainer-only regardless of reporter).
 
 ### Verifying frontend changes
 
