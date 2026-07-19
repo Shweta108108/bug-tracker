@@ -94,7 +94,7 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - [x] Database schema + migrations
 - [x] Auth endpoints (signup/login/me)
 - [x] Projects + membership endpoints
-- [ ] Issue CRUD + filter/search/sort
+- [x] Issue CRUD + filter/search/sort
 - [ ] Comments
 - [ ] Frontend auth pages
 - [ ] Frontend projects/issues/issue-detail pages
@@ -106,5 +106,10 @@ pytest tests/test_auth.py::test_login_success_returns_usable_token  # run a sing
 - **`GET /api/projects/{id}`** and **`GET /api/projects/{id}/members`** added — not in the original contract, but needed by the frontend to show the caller's role in a project and to populate assignee/member-management UI.
 - **Structured error codes are specific**, not just the generic `NOT_FOUND`/`CONFLICT`: adding a member with an unregistered email returns `USER_NOT_FOUND` (404), adding an existing member returns `ALREADY_MEMBER` (409).
 - **Invite-by-email requires an existing account** — returns `USER_NOT_FOUND` rather than creating a pending invite (see Tech choices above).
+- **Pagination added** to `GET /api/projects/{id}/issues` (`page`/`page_size` query params, response wrapped as `{items, total, page, page_size}`) — the example contract didn't show these params, but the frontend spec explicitly requires pagination.
+- **`DELETE /api/issues/{id}` is maintainer-only.** The spec doesn't say whether reporters can delete their own issues; maintainer-only was chosen to avoid accidental data loss.
+- **Assignee must already be a project member** — assigning an issue to a non-member returns 400 `ASSIGNEE_NOT_MEMBER`.
+- **Priority sort uses an explicit severity ranking** (`critical > high > medium > low`), not alphabetical string order.
+- **Title search is `ILIKE`-based** (substring, case-insensitive), accelerated by a `pg_trgm` GIN index — not full-text (`tsvector`) search.
 
-More deviations will be added here as later milestones (issues, comments) introduce them; see `CLAUDE.md` for implementation-level detail.
+More deviations will be added here as later milestones (comments, frontend) introduce them; see `CLAUDE.md` for implementation-level detail.
